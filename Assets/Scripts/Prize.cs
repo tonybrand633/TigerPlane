@@ -68,6 +68,11 @@ public class Prize : MonoBehaviour
         }
     }
 
+    public void SetSpeed(float speed) 
+    {
+        this.Speed = speed;
+    }
+
     Transform tracerParent(Transform t) 
     {
         if (t.transform.name != "tigermachinePlane")
