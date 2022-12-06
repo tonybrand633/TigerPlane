@@ -11,8 +11,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - Plane
+  - TigerMachine
   - 
   - 
   - 
@@ -40,4 +40,13 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: TigerMachineBackGround
+    uniqueID: 639423255
+    locked: 0
+  - name: TigerMachine
+    uniqueID: 919605841
+    locked: 0
+  - name: TigerMachinePrize
+    uniqueID: 1718327323
     locked: 0
