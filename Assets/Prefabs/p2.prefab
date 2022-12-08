@@ -99,5 +99,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   outOfBottom: 0
   checkType: 0
-  Speed: 5
+  Speed: 10
   panelSr: {fileID: 0}

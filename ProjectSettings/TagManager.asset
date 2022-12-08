@@ -13,8 +13,8 @@ TagManager:
   - UI
   - Plane
   - TigerMachine
-  - 
-  - 
+  - CoinPot
+  - Coin
   - 
   - 
   - 
@@ -49,4 +49,7 @@ TagManager:
     locked: 0
   - name: TigerMachinePrize
     uniqueID: 1718327323
+    locked: 0
+  - name: CoinPot
+    uniqueID: 1420592687
     locked: 0

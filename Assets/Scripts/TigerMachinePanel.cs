@@ -25,15 +25,18 @@ public class TigerMachinePanel : MonoBehaviour
     
     public bool PickPrize;
     public bool prizeMoveComplete;
+    public bool prizeLoad;
 
-    
-    public float pStartSpeed;
+
+    public float pSpeed;
+    //public float pSpeedRateOffset;
     public float PrizeMoveDuration;
-    public float pInsDuration;
+    public float pInsInterval;
     public float machineDurationTime;
 
     public float xOffset;
     public float yOffset;
+    public float initYOffset;
 
     public Transform PrizeAnchor;
     public Transform NormalPrizeAnchor;
@@ -54,7 +57,7 @@ public class TigerMachinePanel : MonoBehaviour
 
     Bounds bounds;
     bool pMove;
-    bool prizeLoad;
+    
     float Width;
     float Height;
 
@@ -76,6 +79,8 @@ public class TigerMachinePanel : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //prizeMoveComplete = true;
+
         sr = GetComponent<SpriteRenderer>();
         bounds = sr.bounds;
 
@@ -86,37 +91,30 @@ public class TigerMachinePanel : MonoBehaviour
     }
 
     void Update()
-    {
-        u2 = (Time.time - pStartTime) / machineDurationTime;
-        if (u2 <= 1)
-        {
-            //完成一个速度递减的功能
-            if (pMove)
-            {
-                InstiateNormalPrize();
-                //u2 = (Time.time - pStartTime) / pDuration;
-                //if (u2 >= 1)
-                //{
-                //    InstiateNormalPrize();
-                //    pStartTime = Time.time;
-                //}
-            }
-        }
-        else 
-        {
-            pStartMove = false;
-        }
-              
-        
-        if (PickPrize) 
+    {        
+        if (!pStartMove && PickPrize)
         {
             StartPickPrize();
-        }
+        }        
     }    
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        u2 = (Time.time - pStartTime) / machineDurationTime;
+        if (u2 < 1)
+        {
+            //完成一个速度递减的功能
+            if (pMove)
+            {
+                InstiateNormalPrize();
+            }
+        }
+        else
+        {
+            pStartMove = false;
+        }
+
         if (prizeLoad) 
         {
             MovePrize(movePrizeStartTime);
@@ -163,9 +161,9 @@ public class TigerMachinePanel : MonoBehaviour
         tigerMachinePos[8].position = new Vector3(bounds.center.x + (Width / 2) - xOffset, bounds.center.y - (Height / 2) + yOffset, bounds.center.z);
 
 
-        InstiatePos[0].position = new Vector3(bounds.center.x - (Width / 2) + xOffset, bounds.center.y + (Height / 2), bounds.center.z);
-        InstiatePos[1].position = new Vector3(bounds.center.x, bounds.center.y + (Height / 2), bounds.center.z);
-        InstiatePos[2].position = new Vector3(bounds.center.x + (Width / 2) - xOffset, bounds.center.y + (Height / 2), bounds.center.z);
+        InstiatePos[0].position = new Vector3(bounds.center.x - (Width / 2) + xOffset, bounds.center.y + (Height / 2)+initYOffset, bounds.center.z);
+        InstiatePos[1].position = new Vector3(bounds.center.x, bounds.center.y + (Height / 2)+initYOffset, bounds.center.z);
+        InstiatePos[2].position = new Vector3(bounds.center.x + (Width / 2) - xOffset, bounds.center.y + (Height / 2)+initYOffset, bounds.center.z);
 
         resInitPos[0].position = new Vector3(bounds.center.x - (Width / 2) + xOffset, bounds.center.y + (Height / 2) - yOffset + Height, bounds.center.z);
         resInitPos[3].position = new Vector3(bounds.center.x - (Width / 2) + xOffset, bounds.center.y + Height, bounds.center.z);
@@ -183,21 +181,42 @@ public class TigerMachinePanel : MonoBehaviour
         StartCoroutine("pInstiate");
     }
 
+    //IEnumerator pInstiate()
+    //{
+    //    //Debug.Log("Start Coroutine");
+
+    //    for (int i = 0; i < InstiatePos.Length; i++)
+    //    {
+    //        //Debug.Log("Ins go" + i.ToString());
+    //        int pIndex = Random.Range(0, PrizePrefabs.Length);
+    //        GameObject go = Instantiate(PrizePrefabs[pIndex].gameObject, InstiatePos[i].position, Quaternion.identity);
+    //        go.transform.SetParent(NormalPrizeAnchor);
+    //        go.GetComponent<Prize>().SetSpeed((1-u2+pSpeedRateOffset) * pSpeed);
+
+    //    }
+    //    pMove = false;
+    //    yield return new WaitForSeconds(pInsInterval);
+    //    pMove = true;
+
+
+    //    //Debug.Log("2 Seconds Operation");        
+    //}
+
     IEnumerator pInstiate()
     {
         //Debug.Log("Start Coroutine");
 
-        for (int i = 0; i < InstiatePos.Length; i++)
+        for (int i = 0; i < resInitPos.Length; i++)
         {
             //Debug.Log("Ins go" + i.ToString());
             int pIndex = Random.Range(0, PrizePrefabs.Length);
-            GameObject go = Instantiate(PrizePrefabs[pIndex].gameObject, InstiatePos[i].position, Quaternion.identity);
+            GameObject go = Instantiate(PrizePrefabs[pIndex].gameObject, resInitPos[i].position, Quaternion.identity);
             go.transform.SetParent(NormalPrizeAnchor);
-            go.GetComponent<Prize>().SetSpeed((1-u2+0.4f) * pStartSpeed);
-
+            //go.GetComponent<Prize>().SetSpeed((1 - u2 + pSpeedRateOffset) * pSpeed);
+            go.GetComponent<Prize>().SetSpeed(pSpeed);
         }
         pMove = false;
-        yield return new WaitForSeconds(pInsDuration);
+        yield return new WaitForSeconds(pInsInterval);
         pMove = true;
 
 
@@ -205,15 +224,7 @@ public class TigerMachinePanel : MonoBehaviour
     }
 
     public void StartPickPrize() 
-    {
-        if (resPrizes[0].gameObject !=null) 
-        {
-            foreach (GameObject go in resPrizes) 
-            {
-                go.GetComponent<Prize>().enabled = true;
-            }
-        }
-
+    {       
         int index = Random.Range(0, 3);
         PrizeCondition condi = (PrizeCondition)index;
         Debug.Log(condi);
@@ -247,7 +258,7 @@ public class TigerMachinePanel : MonoBehaviour
                     pIndex = Random.Range(0, 3);
                     go = Instantiate(PrizePrefabs[pIndex], resInitPos[i].position, Quaternion.identity).gameObject;
                     go.transform.SetParent(PrizeAnchor);
-                    resPrizes[i] = go;
+                    resPrizes[i] = go; 
                 }
                 break;
             case PrizeCondition.litPrize:                
@@ -270,10 +281,9 @@ public class TigerMachinePanel : MonoBehaviour
 
     void MovePrize(float startTime) 
     {
+        u = (Time.time - startTime) / PrizeMoveDuration;
         for (int i = 0; i < resPrizes.Length; i++)
-        {
-            u = (Time.time - startTime)/PrizeMoveDuration;
-            
+        {                       
             GameObject go = resPrizes[i];
             Vector3 pos = go.transform.position;
             if (u < 1)
@@ -289,6 +299,17 @@ public class TigerMachinePanel : MonoBehaviour
         }
     }
 
+    void RefreshResPrizes()
+    {
+        if (resPrizes[0].gameObject != null)
+        {
+            foreach (GameObject go in resPrizes)
+            {
+                go.GetComponent<Prize>().enabled = true;
+            }
+        }
+    }
+
     void CheckPrizeRes()
     {
 
@@ -299,12 +320,19 @@ public class TigerMachinePanel : MonoBehaviour
     //绑定于StartButton上的方法;
     public void StartBtnClick()
     {
-        pMove = true;
-        pStartTime = Time.time;
-        pStartMove = true;
+        RefreshResPrizes();
 
-        
-        prizeMoveComplete = false;
-    }
-    
+        if (!pStartMove)
+        {
+            pMove = true;            
+            pStartMove = true;
+            PickPrize = true;
+            prizeLoad = false;
+            pStartTime = Time.time;
+        }
+        else 
+        {
+            return;
+        }        
+    }    
 }
