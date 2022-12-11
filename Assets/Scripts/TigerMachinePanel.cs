@@ -20,11 +20,10 @@ public class TigerMachinePanel : MonoBehaviour
 
     
     [Header("Set In Inspector")]
-    //public bool isMove;    
-    public bool pStartMove;
-    
-    public bool PickPrize;
-    public bool prizeMoveComplete;
+    //public bool isMove;
+    //public bool prizeMoveComplete;
+    public bool pStartMove;    
+    public bool PickPrize;    
     public bool prizeLoad;
     public bool startCheck;
 
@@ -92,7 +91,6 @@ public class TigerMachinePanel : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //prizeMoveComplete = true;
         sr = GetComponent<SpriteRenderer>();
         bounds = sr.bounds;
 
@@ -104,7 +102,7 @@ public class TigerMachinePanel : MonoBehaviour
 
     void Update()
     {
-        if (machineMoveCount>0) 
+        if (machineMoveCount > 0)
         {
             StartBtnClick();
         }
@@ -291,7 +289,7 @@ public class TigerMachinePanel : MonoBehaviour
             }
             else 
             {
-                prizeMoveComplete = true;
+                //prizeMoveComplete = true;
                 CheckPrizeRes();
                 return;
             }                       
@@ -300,7 +298,8 @@ public class TigerMachinePanel : MonoBehaviour
 
     void RefreshResPrizes()
     {
-        if (resPrizes[0].gameObject != null)
+        GameObject restemp = resPrizes[0];
+        if (restemp!= null)
         {
             foreach (GameObject go in resPrizes)
             {
@@ -357,7 +356,7 @@ public class TigerMachinePanel : MonoBehaviour
         //if (pStartMove || prizeCheckOver == false)
         //{
         //    return;
-        //}
+        //}        
         if (MachineDuration) 
         {
             return;
@@ -369,7 +368,7 @@ public class TigerMachinePanel : MonoBehaviour
         PickPrize = true;
         prizeLoad = false;
         startCheck = false;
-        prizeMoveComplete = false;
+        //prizeMoveComplete = false;
         pStartTime = Time.time;
         machineMoveCount--;
     }    
