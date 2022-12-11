@@ -51,6 +51,7 @@ public class TigerMachinePanel : MonoBehaviour
     public Transform[] InstiatePos;
     public GameObject[] resPrizes;
     public List<GameObject> movingPirzes = new List<GameObject>();
+    public PrizeCondition condi;
 
 
 
@@ -223,7 +224,7 @@ public class TigerMachinePanel : MonoBehaviour
     public void StartPickPrize() 
     {       
         int index = Random.Range(0, 3);
-        PrizeCondition condi = (PrizeCondition)index;
+        condi = (PrizeCondition)index;
         Debug.Log(condi);
         resPrizes = new GameObject[9];
         InitPrize(condi);

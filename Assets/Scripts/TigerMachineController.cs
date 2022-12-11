@@ -6,8 +6,11 @@ public class TigerMachineController : MonoBehaviour
 {
     float cCount;
 
+    public static TigerMachineController S;
     public GameObject Coin;
     public float coinInsTime;
+    
+
 
     public float coinCount 
     {
@@ -22,9 +25,9 @@ public class TigerMachineController : MonoBehaviour
     float lastCoinInsTime;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        
+        S = this;    
     }
 
     // Update is called once per frame
