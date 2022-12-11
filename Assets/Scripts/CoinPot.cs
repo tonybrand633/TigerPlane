@@ -6,7 +6,6 @@ public class CoinPot : MonoBehaviour
 {
     public float Speed;
     public Transform Left;
-    public GameObject coinPot;
     public Transform Right;
     public BoxCollider2D col;
     
@@ -17,7 +16,7 @@ public class CoinPot : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        col = GetComponentInChildren<BoxCollider2D>();
+        col = this.GetComponent<BoxCollider2D>();
 
         float rf = Random.Range(0, 1);
         if (rf >= 0.5) 
@@ -41,10 +40,10 @@ public class CoinPot : MonoBehaviour
     {
         if (FaceLeft)
         {
-            Vector3 pos = coinPot.transform.position;
+            Vector3 pos = this.transform.position;
             pos.x -= Speed * Time.deltaTime;
-            coinPot.transform.position = pos;
-            if (coinPot.transform.position.x < Left.transform.position.x)
+            this.transform.position = pos;
+            if (this.transform.position.x < Left.transform.position.x)
             {
                 FaceRight = true;
                 FaceLeft = false;
@@ -52,24 +51,28 @@ public class CoinPot : MonoBehaviour
         }
         else if (FaceRight) 
         {
-            Vector3 pos = coinPot.transform.position;
+            Vector3 pos = this.transform.position;
             pos.x += Speed * Time.deltaTime;
-            coinPot.transform.position = pos;
-            if (coinPot.transform.position.x > Right.transform.position.x)
+            this.transform.position = pos;
+            if (this.transform.position.x > Right.transform.position.x)
             {
                 FaceRight = false;
                 FaceLeft = true;
             }
         }        
-    }
+    }    
 
-    //void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    Debug.Log("Coin In");
-    //}
-
-    void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("Coin In" + collision.gameObject.name);
+        if (other.gameObject.tag == "Coin") 
+        {
+            TigerMachinePanel.S.MachineMoveCount++;
+            other.gameObject.GetComponent<CircleCollider2D>().enabled = false;
+        }                
     }
+
+    //void OnCollisionEnter2D(Collision2D collision)
+    //{
+    //    Debug.Log("Coin In" + collision.gameObject.name);
+    //}
 }

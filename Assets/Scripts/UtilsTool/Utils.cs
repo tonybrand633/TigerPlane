@@ -12,6 +12,14 @@ public enum CheckType
 
 public class Utils
 {
+    Camera camera;
+
+    public Utils() 
+    {
+        camera = Camera.main;
+        Debug.Log("Camera Name:" + camera.name);
+    }
+
     public static bool CheckInBounds(Bounds b1,Bounds b2,CheckType type) //b1 - Panel  b2 - prize
     {
         switch (type)
@@ -56,4 +64,9 @@ public class Utils
                 return false;
         }
     }
+
+    //public static bool CheckCameraBounds() 
+    //{
+    
+    //}
 }

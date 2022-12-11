@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Coin
   layers:
   - Default
   - TransparentFX
@@ -49,6 +50,9 @@ TagManager:
     locked: 0
   - name: TigerMachinePrize
     uniqueID: 1718327323
+    locked: 0
+  - name: Coin
+    uniqueID: 810720285
     locked: 0
   - name: CoinPot
     uniqueID: 1420592687

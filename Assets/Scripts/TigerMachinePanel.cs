@@ -26,6 +26,9 @@ public class TigerMachinePanel : MonoBehaviour
     public bool PickPrize;
     public bool prizeMoveComplete;
     public bool prizeLoad;
+    public bool startCheck;
+
+    public bool MachineDuration;
 
 
     public float pSpeed;
@@ -33,6 +36,7 @@ public class TigerMachinePanel : MonoBehaviour
     public float PrizeMoveDuration;
     public float pInsInterval;
     public float machineDurationTime;
+    public float prizeWaitTime;
 
     public float xOffset;
     public float yOffset;
@@ -60,17 +64,25 @@ public class TigerMachinePanel : MonoBehaviour
     
     float Width;
     float Height;
+    float machineMoveCount;
 
 
     public float u;
     public float u2;
     public float pStartTime;
     public float movePrizeStartTime;
+
+    public float MachineMoveCount 
+    {
+        get { return machineMoveCount; }
+        set 
+        {
+            machineMoveCount = value; 
+        }
+    }
+
     //public float machineDurationTime;
-
-    
-    
-
+       
     void Awake()
     {
         S = this;
@@ -80,7 +92,6 @@ public class TigerMachinePanel : MonoBehaviour
     void Start()
     {
         //prizeMoveComplete = true;
-
         sr = GetComponent<SpriteRenderer>();
         bounds = sr.bounds;
 
@@ -91,7 +102,12 @@ public class TigerMachinePanel : MonoBehaviour
     }
 
     void Update()
-    {        
+    {
+        if (machineMoveCount>0) 
+        {
+            StartBtnClick();
+        }
+
         if (!pStartMove && PickPrize)
         {
             StartPickPrize();
@@ -202,26 +218,7 @@ public class TigerMachinePanel : MonoBehaviour
     //    //Debug.Log("2 Seconds Operation");        
     //}
 
-    IEnumerator pInstiate()
-    {
-        //Debug.Log("Start Coroutine");
 
-        for (int i = 0; i < resInitPos.Length; i++)
-        {
-            //Debug.Log("Ins go" + i.ToString());
-            int pIndex = Random.Range(0, PrizePrefabs.Length);
-            GameObject go = Instantiate(PrizePrefabs[pIndex].gameObject, resInitPos[i].position, Quaternion.identity);
-            go.transform.SetParent(NormalPrizeAnchor);
-            //go.GetComponent<Prize>().SetSpeed((1 - u2 + pSpeedRateOffset) * pSpeed);
-            go.GetComponent<Prize>().SetSpeed(pSpeed);
-        }
-        pMove = false;
-        yield return new WaitForSeconds(pInsInterval);
-        pMove = true;
-
-
-        //Debug.Log("2 Seconds Operation");        
-    }
 
     public void StartPickPrize() 
     {       
@@ -294,6 +291,7 @@ public class TigerMachinePanel : MonoBehaviour
             else 
             {
                 prizeMoveComplete = true;
+                CheckPrizeRes();
                 return;
             }                       
         }
@@ -312,27 +310,66 @@ public class TigerMachinePanel : MonoBehaviour
 
     void CheckPrizeRes()
     {
-
+        if (!startCheck) 
+        {
+            StartCoroutine("WaitForPrizeCheck");
+            startCheck = true;
+        }   
+        
 
     }
 
+    IEnumerator pInstiate()
+    {
+        //Debug.Log("Start Coroutine");
+
+        for (int i = 0; i < resInitPos.Length; i++)
+        {
+            //Debug.Log("Ins go" + i.ToString());
+            int pIndex = Random.Range(0, PrizePrefabs.Length);
+            GameObject go = Instantiate(PrizePrefabs[pIndex].gameObject, resInitPos[i].position, Quaternion.identity);
+            go.transform.SetParent(NormalPrizeAnchor);
+            //go.GetComponent<Prize>().SetSpeed((1 - u2 + pSpeedRateOffset) * pSpeed);
+            go.GetComponent<Prize>().SetSpeed(pSpeed);
+        }
+        pMove = false;
+        yield return new WaitForSeconds(pInsInterval);
+        pMove = true;
+
+
+        //Debug.Log("2 Seconds Operation");        
+    }
+
+    IEnumerator WaitForPrizeCheck() 
+    {
+        yield return new WaitForSeconds(prizeWaitTime);
+        MachineDuration = false;
+    }
 
     //绑定于StartButton上的方法;
     public void StartBtnClick()
     {
-        RefreshResPrizes();
-
-        if (!pStartMove)
-        {
-            pMove = true;            
-            pStartMove = true;
-            PickPrize = true;
-            prizeLoad = false;
-            pStartTime = Time.time;
-        }
-        else 
+        //if (pStartMove&&prizeLoad) 
+        //{
+        //    return;
+        //}
+        //if (pStartMove || prizeCheckOver == false)
+        //{
+        //    return;
+        //}
+        if (MachineDuration) 
         {
             return;
-        }        
+        }
+        RefreshResPrizes();
+        pMove = true;
+        pStartMove = true;
+        MachineDuration = true;
+        PickPrize = true;
+        prizeLoad = false;
+        startCheck = false;
+        prizeMoveComplete = false;
+        pStartTime = Time.time;
+        machineMoveCount--;
     }    
 }
