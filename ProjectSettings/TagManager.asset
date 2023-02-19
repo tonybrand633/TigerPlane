@@ -57,3 +57,6 @@ TagManager:
   - name: CoinPot
     uniqueID: 1420592687
     locked: 0
+  - name: Plane
+    uniqueID: 2133001189
+    locked: 0

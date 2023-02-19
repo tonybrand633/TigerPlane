@@ -64,9 +64,4 @@ public class Utils
                 return false;
         }
     }
-
-    //public static bool CheckCameraBounds() 
-    //{
-    
-    //}
 }
